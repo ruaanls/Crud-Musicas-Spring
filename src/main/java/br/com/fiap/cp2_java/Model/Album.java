@@ -1,9 +1,6 @@
 package br.com.fiap.cp2_java.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -15,7 +12,11 @@ public class Album
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String nome;
-    private List<Artista> artistas;
+    @ManyToOne(fetch = FetchType.LAZY) // LAZY é geralmente preferível para performance
+    @JoinColumn(name = "artista_id")
+    private Artista artistas;
+    @OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    // ACHO QUE FALTA UM JOIN COLUMN AQUI
     private List<Musica> musicas;
     private Estilo estilo;
 
@@ -35,11 +36,11 @@ public class Album
         this.nome = nome;
     }
 
-    public List<Artista> getArtistas() {
+    public Artista getArtistas() {
         return artistas;
     }
 
-    public void setArtistas(List<Artista> artistas) {
+    public void setArtistas(Artista artistas) {
         this.artistas = artistas;
     }
 

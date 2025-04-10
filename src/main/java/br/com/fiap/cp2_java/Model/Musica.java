@@ -1,9 +1,6 @@
 package br.com.fiap.cp2_java.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -16,10 +13,15 @@ public class Musica
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
-    private String album;
+
     private int anoLancamento;
     private Estilo estilo;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "musica_artista", joinColumns = @JoinColumn(name = "musica_id"), inverseJoinColumns = @JoinColumn(name = "artista_id"))
     private List<Artista> artistas;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "album_id")
+    private Album album;
 
     public Musica() {
     }
@@ -62,5 +64,13 @@ public class Musica
 
     public void setArtistas(List<Artista> artistas) {
         this.artistas = artistas;
+    }
+
+    public Album getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(Album album) {
+        this.album = album;
     }
 }

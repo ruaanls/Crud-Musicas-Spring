@@ -16,7 +16,7 @@ public class MusicaRequestDTO
     private String titulo;
     @NotBlank(message = "Uma música deve pertencer a um album")
     @Size(min = 5, max = 254, message = "O album deve ter entre 5 e 254 caracteres")
-    private AlbumRequest album;
+    private long album;
     @NotBlank(message = "Uma música deve ter ao menos 1 artista/banda e ele não deve ser nulo")
     private List<ArtistaRequest> artistas;
     @NotBlank(message = "Uma música deve ter um ano de lançamento válido e não nulo")
@@ -25,4 +25,44 @@ public class MusicaRequestDTO
     private int anoLancamento;
     @NotBlank(message = "A definição de um estilo para a música é obrigatório, valores Nulos não são válidos")
     private Estilo estilo;
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public long getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(long album) {
+        this.album = album;
+    }
+
+    public List<ArtistaRequest> getArtistas() {
+        return artistas;
+    }
+
+    public void setArtistas(List<ArtistaRequest> artistas) {
+        this.artistas = artistas;
+    }
+
+    public int getAnoLancamento() {
+        return anoLancamento;
+    }
+
+    public void setAnoLancamento(int anoLancamento) {
+        this.anoLancamento = anoLancamento;
+    }
+
+    public Estilo getEstilo() {
+        return estilo;
+    }
+
+    public void setEstilo(Estilo estilo) {
+        this.estilo = estilo;
+    }
 }

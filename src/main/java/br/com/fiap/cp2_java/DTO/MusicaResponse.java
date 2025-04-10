@@ -1,17 +1,21 @@
 package br.com.fiap.cp2_java.DTO;
 
 import org.springframework.hateoas.Link;
+import org.springframework.http.HttpStatusCode;
 
-public class MusicaResponse
-{
+public class MusicaResponse {
     private Long id;
     private String infoMusica;
+    private String artistas;
     private Link link;
 
-    public MusicaResponse(Long id, String infoMusica) {
+    public MusicaResponse(Long id, String infoMusica, String Artistas) {
         this.id = id;
         this.infoMusica = infoMusica;
+        this.artistas = Artistas;
     }
+
+
 
     public Long getId() {
         return id;
@@ -35,5 +39,13 @@ public class MusicaResponse
 
     public void setLink(Link link) {
         this.link = link;
+    }
+
+    public String getArtistas() {
+        return artistas;
+    }
+
+    public void setArtistas(String artistas) {
+        this.artistas = artistas;
     }
 }

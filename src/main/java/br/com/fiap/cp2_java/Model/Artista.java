@@ -1,9 +1,6 @@
 package br.com.fiap.cp2_java.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -15,9 +12,15 @@ public class Artista
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
+    @ManyToMany(mappedBy = "artistas", fetch = FetchType.LAZY)
     private List<Musica> musicas;
+    @OneToMany(mappedBy = "artista", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Album> albuns;
 
     public Artista() {
+    }
+
+    public Artista(String nome) {
     }
 
     public Long getId() {
@@ -42,5 +45,13 @@ public class Artista
 
     public void setMusicas(List<Musica> musicas) {
         this.musicas = musicas;
+    }
+
+    public List<Album> getAlbuns() {
+        return albuns;
+    }
+
+    public void setAlbuns(List<Album> albuns) {
+        this.albuns = albuns;
     }
 }

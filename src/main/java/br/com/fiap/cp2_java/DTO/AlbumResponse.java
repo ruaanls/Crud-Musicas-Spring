@@ -1,23 +1,43 @@
 package br.com.fiap.cp2_java.DTO;
 
+import org.springframework.hateoas.RepresentationModel;
+
+import java.util.List;
+
 public class AlbumResponse
 {
-    private long id;
+
+    private Long id;
     private String titulo;
-    private String artistas;
+    private String nomeArtista;
+    private String Estilo;
+    private List<MusicaAlbum> musicas;
 
 
-    public AlbumResponse(long id, String titulo, String artistas) {
-        this.id = id;
-        this.titulo = titulo;
-        this.artistas = artistas;
+    public AlbumResponse() {
     }
 
-    public long getId() {
+
+    public AlbumResponse(Long id, String titulo, String nomeArtista, String estilo) {
+        this.id = id;
+        this.titulo = titulo;
+        this.nomeArtista = nomeArtista;
+        this.Estilo = estilo;
+    }
+
+    public AlbumResponse(Long id, String titulo, String nomeArtista, String estilo, List<MusicaAlbum> musicas) {
+        this.id = id;
+        this.titulo = titulo;
+        this.nomeArtista = nomeArtista;
+        Estilo = estilo;
+        this.musicas = musicas;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -29,11 +49,27 @@ public class AlbumResponse
         this.titulo = titulo;
     }
 
-    public String getArtistas() {
-        return artistas;
+    public String getNomeArtista() {
+        return nomeArtista;
     }
 
-    public void setArtistas(String artistas) {
-        this.artistas = artistas;
+    public void setNomeArtista(String nomeArtista) {
+        this.nomeArtista = nomeArtista;
+    }
+
+    public String getEstilo() {
+        return Estilo;
+    }
+
+    public void setEstilo(String estilo) {
+        Estilo = estilo;
+    }
+
+    public List<MusicaAlbum> getMusicas() {
+        return musicas;
+    }
+
+    public void setMusicas(List<MusicaAlbum> musicas) {
+        this.musicas = musicas;
     }
 }

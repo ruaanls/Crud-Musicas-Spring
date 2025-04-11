@@ -3,19 +3,29 @@ package br.com.fiap.cp2_java.DTO;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatusCode;
 
+import java.util.List;
+
 public class MusicaResponse {
     private Long id;
-    private String infoMusica;
-    private String artistas;
-    private Link link;
+    private String titulo;
+    private Integer anoLancamento;
+    private String estilo;
+    private String nomeAlbum;
+    private List<String> nomesArtistas;
 
-    public MusicaResponse(Long id, String infoMusica, String Artistas) {
-        this.id = id;
-        this.infoMusica = infoMusica;
-        this.artistas = Artistas;
+
+    public MusicaResponse() {
     }
 
 
+    public MusicaResponse(Long id, String titulo, Integer anoLancamento, String estilo, String nomeAlbum, List<String> nomesArtistas) {
+        this.id = id;
+        this.titulo = titulo;
+        this.anoLancamento = anoLancamento;
+        this.estilo = estilo;
+        this.nomeAlbum = nomeAlbum;
+        this.nomesArtistas = nomesArtistas;
+    }
 
     public Long getId() {
         return id;
@@ -25,27 +35,43 @@ public class MusicaResponse {
         this.id = id;
     }
 
-    public String getInfoMusica() {
-        return infoMusica;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setInfoMusica(String infoMusica) {
-        this.infoMusica = infoMusica;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
-    public Link getLink() {
-        return link;
+    public Integer getAnoLancamento() {
+        return anoLancamento;
     }
 
-    public void setLink(Link link) {
-        this.link = link;
+    public void setAnoLancamento(Integer anoLancamento) {
+        this.anoLancamento = anoLancamento;
     }
 
-    public String getArtistas() {
-        return artistas;
+    public String getEstilo() {
+        return estilo;
     }
 
-    public void setArtistas(String artistas) {
-        this.artistas = artistas;
+    public void setEstilo(String estilo) {
+        this.estilo = estilo;
+    }
+
+    public String getNomeAlbum() {
+        return nomeAlbum;
+    }
+
+    public void setNomeAlbum(String nomeAlbum) {
+        this.nomeAlbum = nomeAlbum;
+    }
+
+    public List<String> getNomesArtistas() {
+        return nomesArtistas;
+    }
+
+    public void setNomesArtistas(List<String> nomesArtistas) {
+        this.nomesArtistas = nomesArtistas;
     }
 }

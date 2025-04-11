@@ -2,20 +2,21 @@ package br.com.fiap.cp2_java.Model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Artista
 {
-    //FALTA OS RELACIONAMENTOS AINDA
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
     @ManyToMany(mappedBy = "artistas", fetch = FetchType.LAZY)
-    private List<Musica> musicas;
-    @OneToMany(mappedBy = "artista", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Album> albuns;
+    private List<Musica> musicas = new ArrayList<>();
+    @OneToMany(mappedBy = "artistas", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Album> albuns = new ArrayList<>();
 
     public Artista() {
     }

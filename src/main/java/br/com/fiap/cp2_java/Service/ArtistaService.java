@@ -2,51 +2,82 @@ package br.com.fiap.cp2_java.Service;
 
 import br.com.fiap.cp2_java.DTO.ArtistaRequest;
 import br.com.fiap.cp2_java.DTO.ArtistaResponse;
+import br.com.fiap.cp2_java.Exception.ValidationExceptionHandler;
 import br.com.fiap.cp2_java.Mapper.AlbumMapper;
 import br.com.fiap.cp2_java.Mapper.ArtistaMapper;
 import br.com.fiap.cp2_java.Model.Artista;
 import br.com.fiap.cp2_java.Repository.ArtistaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ArtistaService
 {
-    private final AlbumMapper albumMapper = new AlbumMapper();
-    private final ArtistaMapper artistaMapper = new ArtistaMapper();
     private final ArtistaRepository artistaRepository;
-    @Autowired
-    public ArtistaService( ArtistaRepository artistaRepository)
-    {
+    private final ArtistaMapper artistaMapper;
+
+
+    public ArtistaService(ArtistaRepository artistaRepository, ArtistaMapper artistaMapper) {
         this.artistaRepository = artistaRepository;
-
+        this.artistaMapper = artistaMapper;
     }
 
-    public List<Artista> saveAllArtistas(List<ArtistaRequest> artistas)
-    {
-        List<Artista> artistasSalvos = new ArrayList<>();
-        for(ArtistaRequest artista : artistas)
-        {
-            artistasSalvos.add(artistaMapper.requestToArtista(artista));
-        }
-        return artistaRepository.saveAll(artistasSalvos);
+
+    @Transactional
+    public ArtistaResponse createArtista(ArtistaRequest artistaRequest) {
+        Artista artistaToSave = artistaMapper.requestToArtista(artistaRequest);
+        Artista savedArtista = artistaRepository.save(artistaToSave);
+        return artistaMapper.artistaToResponse(savedArtista);
     }
 
-    public ArtistaResponse saveArtista(Artista artista)
-    {
-        artistaRepository.save(artista);
+
+    @Transactional
+    public ArtistaResponse saveArtista(Artista artista) {
+        Artista savedArtista = artistaRepository.save(artista);
+        return artistaMapper.artistaToResponse(savedArtista);
+    }
+
+
+
+    @Transactional
+    public List<ArtistaResponse> saveAllArtistas(List<Artista> artistas) {
+        List<Artista> savedArtistas = artistaRepository.saveAll(artistas);
+        return savedArtistas.stream()
+                .map(artistaMapper::artistaToResponse)
+                .collect(Collectors.toList());
+    }
+
+
+    public Artista findArtistaById(Long id) {
+        return artistaRepository.findById(id)
+                .orElseThrow(() -> new ValidationExceptionHandler.ResourceNotFoundException("Artista não encontrado com ID: " + id)); // Usa a exceção correta
+    }
+
+    @Transactional(readOnly = true)
+    public ArtistaResponse findArtistaResponseById(Long id) {
+        Artista artista = findArtistaById(id);
         return artistaMapper.artistaToResponse(artista);
     }
 
-    public Artista findArtistaById(long id)
-    {
-        Optional<Artista> artista = artistaRepository.findById(id);
+    @Transactional(readOnly = true)
+    public List<ArtistaResponse> findAllArtistas() {
+        return artistaRepository.findAll().stream()
+                .map(artistaMapper::artistaToResponse)
+                .collect(Collectors.toList());
+    }
 
-        return artista.orElse(null);
+    @Transactional
+    public void deleteArtistaById(Long id) {
+        if (!artistaRepository.existsById(id)) {
+            throw new ValidationExceptionHandler.ResourceNotFoundException("Artista não encontrado com ID: " + id);
+        }
+        artistaRepository.deleteById(id);
     }
 
 

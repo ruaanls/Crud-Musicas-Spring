@@ -2,22 +2,37 @@ package br.com.fiap.cp2_java.Model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Album
 {
-    //FALTA OS RELACIONAMENTOS AINDA
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
+
     private String nome;
-    @ManyToOne(fetch = FetchType.LAZY) // LAZY é geralmente preferível para performance
-    @JoinColumn(name = "artista_id")
+
+    // Relação Muitos-para-Um com Artista (Álbum pertence a UM artista)
+    // Lado DONO da relação. Define a FK na tabela ALBUM.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "artista_id", nullable = false) // Garante que todo álbum tem um artista
     private Artista artistas;
-    @OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    // ACHO QUE FALTA UM JOIN COLUMN AQUI
-    private List<Musica> musicas;
+
+    // Relação Um-para-Muitos com Musica (Álbum tem várias músicas)
+    // Lado INVERSO da relação. Mapeado pelo campo 'album' na classe Musica.
+    @OneToMany(
+            mappedBy = "album",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<Musica> musicas = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estilo")
     private Estilo estilo;
 
     public long getId() {

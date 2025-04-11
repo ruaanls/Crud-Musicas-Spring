@@ -13,34 +13,78 @@ import br.com.fiap.cp2_java.Service.ArtistaService;
 import br.com.fiap.cp2_java.Service.MusicaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.swing.event.HyperlinkEvent;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class AlbumController
-{
-    @Autowired
-    private MusicaService musicaService;
-    private final MusicaMapper musicaMapper = new MusicaMapper();
-    private final AlbumMapper albumMapper = new AlbumMapper();
-    private final ArtistaMapper artistaMapper = new ArtistaMapper();
-    @Autowired
-    private br.com.fiap.cp2_java.Service.ArtistaService artistaService;
-    @Autowired
-    private br.com.fiap.cp2_java.Service.AlbumService albumService;
+import static org.springframework.hateoas.IanaLinkRelations.SELF;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
+@RestController
+@RequestMapping("/albuns") // Plural
+public class AlbumController {
+
+    private final AlbumService albumService;
+    private final ArtistaService artistaService;
+
+
+    public AlbumController(AlbumService albumService, ArtistaService artistaService) {
+        this.albumService = albumService;
+        this.artistaService = artistaService;
+    }
+
 
     @PostMapping
-    public ResponseEntity<AlbumResponse> createAlbum (@Valid @RequestBody AlbumRequest albumRequest)
-    {
-        List<Musica> musicas = musicaService.saveAll(albumRequest.getMusicas());
-        Artista artista = artistaService.findArtistaById(albumRequest.getArtista());
-        Album album = albumMapper.requestToAlbum(albumRequest);
-        album.setArtistas(artista);
-        album.setMusicas(musicas);
-        return new ResponseEntity<>(albumService.saveAlbum(album), HttpStatus.CREATED);
+    public ResponseEntity<AlbumResponse> createAlbum(@Valid @RequestBody AlbumRequest albumRequest) {
+        AlbumResponse albumResponse = albumService.createAlbum(albumRequest);
+        return new ResponseEntity<>(albumResponse,HttpStatus.CREATED);
     }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EntityModel<AlbumResponse>> getAlbumById(@PathVariable Long id) {
+        AlbumResponse albumResponse = albumService.findAlbumResponseById(id);
+        // Adiciona links HATEOAS
+        EntityModel<AlbumResponse> entityModel = EntityModel.of(albumResponse);
+        entityModel.add(linkTo(methodOn(AlbumController.class).getAllAlbums()).withRel("albuns"));
+
+
+
+        return ResponseEntity.ok(entityModel);
+    }
+
+
+    @GetMapping
+    public ResponseEntity<List<AlbumResponse>> getAllAlbums() {
+        List<AlbumResponse> albuns = albumService.findAllAlbums();
+
+        return new ResponseEntity<>(albuns,HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AlbumResponse> updateAlbum(@PathVariable Long id, @RequestBody AlbumRequest albumRequest)
+    {
+        Album album = albumService.findAlbumById(id);
+
+        Artista artista = artistaService.findArtistaById(albumRequest.getArtistaId());
+        album.setEstilo(albumRequest.getEstilo());
+        album.setNome(albumRequest.getTitulo());
+        album.setArtistas(artista);
+        return  new ResponseEntity<>(albumService.saveAlbum(album), HttpStatus.CREATED);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAlbum(@PathVariable Long id) {
+        albumService.deleteAlbumById(id);
+        return ResponseEntity.noContent().build(); // Retorna 204 No Content
+    }
+
 
 }

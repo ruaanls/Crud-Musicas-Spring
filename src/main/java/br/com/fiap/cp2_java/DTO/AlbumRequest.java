@@ -2,51 +2,47 @@ package br.com.fiap.cp2_java.DTO;
 
 import br.com.fiap.cp2_java.Model.Estilo;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
 public class AlbumRequest
 {
-    @NotBlank(message = "O título da música não pode ser nulo ou vazio")
+    @NotBlank(message = "O título do álbum não pode ser nulo ou vazio")
     @Size(min = 2, max = 254, message = "O título deve ter entre 2 e 254 caracteres")
     private String titulo;
-    @NotBlank(message = "A definição de um estilo para o album é obrigatório, valores Nulos não são válidos")
-    private Estilo estilo;
-    @NotBlank(message = "A definição de um artista para o album é obrigatório, valores Nulos não são válidos")
-    private long  artista;
-    @NotBlank(message = "A definição de músicas é obrigatório, valores Nulos não são válidos")
-    private List<MusicaRequestDTO> musicas;
 
-    public String getTitulo() {
+    @NotNull(message = "A definição de um estilo para o album é obrigatório")
+    private Estilo estilo;
+
+    @NotNull(message = "O ID do artista para o álbum é obrigatório")
+    @Positive(message = "O ID do artista deve ser um número positivo")
+    private Long artistaId;
+
+
+    public @NotBlank(message = "O título do álbum não pode ser nulo ou vazio") @Size(min = 2, max = 254, message = "O título deve ter entre 2 e 254 caracteres") String getTitulo() {
         return titulo;
     }
 
-    public void setTitulo(String titulo) {
+    public void setTitulo(@NotBlank(message = "O título do álbum não pode ser nulo ou vazio") @Size(min = 2, max = 254, message = "O título deve ter entre 2 e 254 caracteres") String titulo) {
         this.titulo = titulo;
     }
 
-    public Estilo getEstilo() {
+    public @NotNull(message = "A definição de um estilo para o album é obrigatório") Estilo getEstilo() {
         return estilo;
     }
 
-    public void setEstilo(Estilo estilo) {
+    public void setEstilo(@NotNull(message = "A definição de um estilo para o album é obrigatório") Estilo estilo) {
         this.estilo = estilo;
     }
 
-    public long getArtista() {
-        return artista;
+    public @NotNull(message = "O ID do artista para o álbum é obrigatório") @Positive(message = "O ID do artista deve ser um número positivo") Long getArtistaId() {
+        return artistaId;
     }
 
-    public void setArtista(long artista) {
-        this.artista = artista;
-    }
-
-    public List<MusicaRequestDTO> getMusicas() {
-        return musicas;
-    }
-
-    public void setMusicas(List<MusicaRequestDTO> musicas) {
-        this.musicas = musicas;
+    public void setArtistaId(@NotNull(message = "O ID do artista para o álbum é obrigatório") @Positive(message = "O ID do artista deve ser um número positivo") Long artistaId) {
+        this.artistaId = artistaId;
     }
 }

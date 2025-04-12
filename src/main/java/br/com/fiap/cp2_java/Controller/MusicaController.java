@@ -12,6 +12,10 @@ import br.com.fiap.cp2_java.Service.ArtistaService;
 import br.com.fiap.cp2_java.Service.MusicaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
@@ -60,21 +64,20 @@ public class MusicaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MusicaResponse>> getAllMusicas()
+    public ResponseEntity<Page<MusicaResponse>> getAllMusicas(@RequestParam(defaultValue = "0") Integer pageNumber)
     {
-        List<MusicaResponse> musicas = new ArrayList<>();
-        musicas = musicaService.findAllMusicas();
-        return new ResponseEntity<>(musicas,HttpStatus.OK);
+        Pageable pageable = PageRequest.of(pageNumber, 2);
+        return new ResponseEntity<>(musicaService.findAllMusicas(pageable),HttpStatus.CREATED);
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<EntityModel<MusicaResponse>> getMusicaById(@PathVariable Long id) {
         MusicaResponse musicaResponse = musicaService.findMusicaResponseById(id);
         // Adiciona links HATEOAS
         EntityModel<MusicaResponse> entityModel = EntityModel.of(musicaResponse,
                 linkTo(methodOn(MusicaController.class).getMusicaById(id)).withSelfRel(),
-                linkTo(methodOn(MusicaController.class).getAllMusicas()).withRel("musicas"));
+                linkTo(methodOn(MusicaController.class).getAllMusicas(0)).withRel("musicas"));
 
         return ResponseEntity.ok(entityModel);
     }

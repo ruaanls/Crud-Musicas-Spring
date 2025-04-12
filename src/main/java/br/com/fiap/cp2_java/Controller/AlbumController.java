@@ -2,9 +2,8 @@ package br.com.fiap.cp2_java.Controller;
 
 import br.com.fiap.cp2_java.DTO.AlbumRequest;
 import br.com.fiap.cp2_java.DTO.AlbumResponse;
-import br.com.fiap.cp2_java.Mapper.AlbumMapper;
-import br.com.fiap.cp2_java.Mapper.ArtistaMapper;
-import br.com.fiap.cp2_java.Mapper.MusicaMapper;
+
+
 import br.com.fiap.cp2_java.Model.Album;
 import br.com.fiap.cp2_java.Model.Artista;
 import br.com.fiap.cp2_java.Model.Musica;
@@ -13,6 +12,9 @@ import br.com.fiap.cp2_java.Service.ArtistaService;
 import br.com.fiap.cp2_java.Service.MusicaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
@@ -57,6 +59,13 @@ public class AlbumController {
 
 
         return ResponseEntity.ok(entityModel);
+    }
+
+    @GetMapping("/artista/{artistaid}")
+    public ResponseEntity<Page<AlbumResponse>> getAlbumByArtistaId(@PathVariable Long id,@RequestParam(defaultValue = "0") Integer pageNumber)
+    {
+        Pageable pageable = PageRequest.of(pageNumber,2);
+        return new ResponseEntity<>(albumService.findAlbumByArtistaId(id,pageable),HttpStatus.CREATED);
     }
 
 

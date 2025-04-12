@@ -11,6 +11,8 @@ import br.com.fiap.cp2_java.Repository.AlbumRepository;
 import br.com.fiap.cp2_java.Repository.ArtistaRepository;
 import br.com.fiap.cp2_java.Repository.MusicaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +28,7 @@ public class MusicaService
     private final ArtistaRepository artistaRepository;
     private final MusicaMapper musicaMapper;
 
-    // Injeção via construtor
+
     public MusicaService(MusicaRepository musicaRepository,
                          AlbumRepository albumRepository,
                          ArtistaRepository artistaRepository,
@@ -38,7 +40,7 @@ public class MusicaService
     }
 
 
-    @Transactional
+
     public MusicaResponse createMusica(MusicaRequest musicaRequest) {
 
         Long albumId = musicaRequest.getAlbumId();
@@ -69,7 +71,7 @@ public class MusicaService
     }
 
 
-    @Transactional
+
     public MusicaResponse save(Musica musica) {
 
         Musica savedMusica = musicaRepository.save(musica);
@@ -77,7 +79,7 @@ public class MusicaService
     }
 
 
-    @Transactional
+
     public List<MusicaResponse> saveAll(List<Musica> musicas) {
         List<Musica> savedMusicas = musicaRepository.saveAll(musicas);
 
@@ -85,26 +87,26 @@ public class MusicaService
     }
 
 
-    @Transactional(readOnly = true)
+
     public Musica findMusicaById(Long id) {
         return musicaRepository.findById(id)
                 .orElseThrow(() -> new ValidationExceptionHandler.ResourceNotFoundException("Música não encontrada com ID: " + id));
     }
 
-    @Transactional(readOnly = true)
+
     public MusicaResponse findMusicaResponseById(Long id) {
         Musica musica = findMusicaById(id);
         return musicaMapper.musicaToResponse(musica);
     }
 
-    @Transactional(readOnly = true)
-    public List<MusicaResponse> findAllMusicas() {
-        return musicaRepository.findAll().stream()
-                .map(musicaMapper::musicaToResponse)
-                .collect(Collectors.toList());
+
+    public Page<MusicaResponse> findAllMusicas(Pageable pageable) {
+        return musicaRepository.findAll(pageable)
+                .map(musicaMapper::musicaToResponse);
+
     }
 
-    @Transactional(readOnly = true)
+
     public List<MusicaResponse> findMusicasByAlbumId(Long albumId) {
 
         if (!albumRepository.existsById(albumId)) {
@@ -115,7 +117,7 @@ public class MusicaService
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+
     public List<MusicaResponse> findMusicasByArtistaId(Long artistaId) {
 
         if (!artistaRepository.existsById(artistaId)) {
@@ -126,7 +128,7 @@ public class MusicaService
                 .collect(Collectors.toList());
     }
 
-    @Transactional
+
     public void deleteMusicaById(Long id) {
         if (!musicaRepository.existsById(id)) {
             throw new ValidationExceptionHandler.ResourceNotFoundException("Música não encontrada com ID: " + id);

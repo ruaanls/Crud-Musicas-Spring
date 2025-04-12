@@ -9,8 +9,11 @@ import br.com.fiap.cp2_java.Model.Artista;
 import br.com.fiap.cp2_java.Repository.AlbumRepository;
 import br.com.fiap.cp2_java.Repository.ArtistaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +36,7 @@ public class AlbumService
     }
 
 
-    @Transactional
+
     public AlbumResponse createAlbum(AlbumRequest albumRequest) {
 
         Long artistaId = albumRequest.getArtistaId();
@@ -54,7 +57,7 @@ public class AlbumService
     }
 
 
-    @Transactional
+
     public AlbumResponse saveAlbum(Album album) {
 
         if (album.getArtistas() == null || album.getArtistas().getId() == null) {
@@ -65,26 +68,32 @@ public class AlbumService
         return albumMapper.albumToResponse(savedAlbum);
     }
 
-    @Transactional(readOnly = true)
+    public Page<AlbumResponse> findAlbumByArtistaId(Long id,Pageable pageable)
+    {
+
+        return albumRepository.findByArtistasId(id,pageable).map(albumMapper::albumToResponse);
+    }
+
+
     public Album findAlbumById(Long id) {
         return albumRepository.findById(id)
                 .orElseThrow(() -> new ValidationExceptionHandler.ResourceNotFoundException("Album não encontrado com ID: " + id)); // Usa a exceção correta
     }
 
-    @Transactional(readOnly = true)
+
     public AlbumResponse findAlbumResponseById(Long id) {
         Album album = findAlbumById(id);
         return albumMapper.albumToResponse(album);
     }
 
-    @Transactional(readOnly = true)
+
     public List<AlbumResponse> findAllAlbums() {
         return albumRepository.findAll().stream()
                 .map(albumMapper::albumToResponse)
                 .collect(Collectors.toList());
     }
 
-    @Transactional
+
     public void deleteAlbumById(Long id) {
         if (!albumRepository.existsById(id)) {
             throw new ValidationExceptionHandler.ResourceNotFoundException("Album não encontrado com ID: " + id);

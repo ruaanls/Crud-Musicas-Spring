@@ -29,7 +29,7 @@ public class ArtistaService
     }
 
 
-    @Transactional
+
     public ArtistaResponse createArtista(ArtistaRequest artistaRequest) {
         Artista artistaToSave = artistaMapper.requestToArtista(artistaRequest);
         Artista savedArtista = artistaRepository.save(artistaToSave);
@@ -37,7 +37,7 @@ public class ArtistaService
     }
 
 
-    @Transactional
+
     public ArtistaResponse saveArtista(Artista artista) {
         Artista savedArtista = artistaRepository.save(artista);
         return artistaMapper.artistaToResponse(savedArtista);
@@ -45,7 +45,7 @@ public class ArtistaService
 
 
 
-    @Transactional
+
     public List<ArtistaResponse> saveAllArtistas(List<Artista> artistas) {
         List<Artista> savedArtistas = artistaRepository.saveAll(artistas);
         return savedArtistas.stream()
@@ -59,20 +59,20 @@ public class ArtistaService
                 .orElseThrow(() -> new ValidationExceptionHandler.ResourceNotFoundException("Artista não encontrado com ID: " + id)); // Usa a exceção correta
     }
 
-    @Transactional(readOnly = true)
+
     public ArtistaResponse findArtistaResponseById(Long id) {
         Artista artista = findArtistaById(id);
         return artistaMapper.artistaToResponse(artista);
     }
 
-    @Transactional(readOnly = true)
+
     public List<ArtistaResponse> findAllArtistas() {
         return artistaRepository.findAll().stream()
                 .map(artistaMapper::artistaToResponse)
                 .collect(Collectors.toList());
     }
 
-    @Transactional
+
     public void deleteArtistaById(Long id) {
         if (!artistaRepository.existsById(id)) {
             throw new ValidationExceptionHandler.ResourceNotFoundException("Artista não encontrado com ID: " + id);
